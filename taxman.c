@@ -11,6 +11,8 @@
 
   compile with: gcc taxman.c -o taxman -O3 -Wall -std=gnu11
 
+  compile with -g -O0 when debugging with gdb, -g for valgrind
+
   (Klemens, Ben. 21st Century C / Ben Klemens. First edition. Beijing ;: O’Reilly Media, 2013. Print.)
 
 */
