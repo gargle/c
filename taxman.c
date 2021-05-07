@@ -42,7 +42,6 @@ void initialise_list_of_factors(int *factors, int *numbers, int k) {
       continue;
     if (k%i==0) {
       *factors++=i;
-      numbers[i-1]=0;
     }
   }
 }
@@ -51,7 +50,7 @@ void clear_list_of_factors(int *factors, int *numbers, int k) {
   for (int i=1;i<=k;i++) {
     if (numbers[i-1]==0)
       continue;
-    if (k%numbers[i-1]==0) {
+    if (k%i==0) {
       numbers[i-1]=0;
     }
   }
