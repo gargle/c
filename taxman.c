@@ -9,6 +9,10 @@
 
   https://scruss.com/blog/2019/11/03/taxman-a-basic-game-from-1973/
 
+  compile with: gcc taxman.c -o taxman -O3 -Wall -std=gnu11
+
+  (Klemens, Ben. 21st Century C / Ben Klemens. First edition. Beijing ;: O’Reilly Media, 2013. Print.)
+
 */
 
 
@@ -163,14 +167,14 @@ int main(int argc, char *argv[]) {
     puts("Please use the -n parameter to tell me about the number of entries in the list.");
     return 1;
   }
-  
+
   puts("");
   puts("");
   puts("Hi, I'm the taxman");
 
   my_total=0;
   taxman_total=0;
-    
+
   numbers=(int *)malloc(sizeof(int)*maximum_number); /* array of n integers */
   initialise_list(numbers,maximum_number);
 
