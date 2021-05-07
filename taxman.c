@@ -24,7 +24,7 @@ int how_many_to_take() {
     puts("");
     puts("");
     printf("You take: ");
-    characters_read=scanf("%i", &take);
+    characters_read=scanf("%d", &take);
     while (getchar()!='\n');
   } while (characters_read<1);
   return take;
@@ -40,8 +40,8 @@ void initialise_list_of_factors(int *factors, int *numbers, int k) {
   for (int i=1;i<=k;i++) {
     if (numbers[i-1]==0)
       continue;
-    if (k%numbers[i-1]==0) {
-      *factors++=numbers[i-1];
+    if (k%i==0) {
+      *factors++=i;
       numbers[i-1]=0;
     }
   }
@@ -175,7 +175,7 @@ int main(int argc, char *argv[]) {
   my_total=0;
   taxman_total=0;
 
-  numbers=(int *)malloc(sizeof(int)*maximum_number); /* array of n integers */
+  numbers=(int *)malloc(sizeof(int)*maximum_number);
   initialise_list(numbers,maximum_number);
 
   printf("The list is: "); 
@@ -187,7 +187,7 @@ int main(int argc, char *argv[]) {
     if (number_taken<=maximum_number && numbers[number_taken-1]==number_taken) {
       if ((number_of_factors=check_list_for_factor_of_n(numbers,number_taken))>0) {
         my_total+=number_taken;
-        factors=(int *)malloc(sizeof(int)*number_of_factors); /* array of f integers */
+        factors=(int *)malloc(sizeof(int)*(number_of_factors+1)); /* +1 because number_taken is a factor too */
         initialise_list_of_factors(factors, numbers, number_taken);
         taxman_total+=sum_list(factors,number_of_factors);
         printf("I get: "); 
@@ -225,7 +225,7 @@ int main(int argc, char *argv[]) {
   /* show who won */
   puts("");
   if (my_total>taxman_total)
-    printf("Your total is %d.  The taxman's total is %d.   You win!!!", my_total, taxman_total);
+    printf("Your total is %d.  The taxman's total is %d.   You win!!!\n", my_total, taxman_total);
   else
-    printf("The taxmax's total is %d.  Your total is %d.  The taxman wins.", taxman_total, my_total);
+    printf("The taxmax's total is %d.  Your total is %d.  The taxman wins.\n", taxman_total, my_total);
 }
