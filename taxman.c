@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 /*
 
@@ -20,13 +21,13 @@ void initialise_list(int *array, int n) {
 
 int print_list(int *array, int n) {
   int sum=0;
-  for(int i=1;i<=n;i++) {
+  for(int i=1;i<n;i++) {
     if (array[i-1]==0)
       continue;
     sum+=array[i-1];
-    printf(" %d", array[i-1]);
+    printf("%d, ", array[i-1]);
   }
-  puts("");
+  printf("%d\n", array[n-1]);
   return sum;
 }
 
@@ -92,91 +93,97 @@ void instructions() {
   puts("");
   puts("Your score is the sum of numbers you take.");
   puts("If you want to give up, take 0.");
+  puts("");
   puts("Good luck !!!");
 }
 
-int main(void) {
-  int r,n,k,f;
+int main(int argc, char *argv[]) {
+  int r,k,f;
   int sum,computer;
   int newlist=0;
+  int n=0;
   int *array=NULL;
   int *facto=NULL;
 
+  /* parse the command line options */
+  char ch;
+  while ((ch=getopt(argc, argv, "hn:")) != EOF)
+    switch(ch) {
+    case 'h':
+      instructions();
+      return 0;
+    case 'n':
+      n=atoi(optarg);
+      if (n>50) {
+        puts("At this time, regulations allow a maximum of 50 numbers.");
+        return 1;
+      }
+      break;
+    default: /* if we get here it means that we have encountered an error */
+      return 1;
+    }
+  if (n<1) {
+    puts("Please use the -n parameter to tell me about the number of entries in the list.");
+    return 1;
+  }
+  
   puts("");
   puts("");
   puts("Hi, I'm the taxman");
-  puts("Do you want the regulations (1=Yes, 0=No)");
-  scanf("%d", &r);
-  if (r==1)
-    instructions();
 
-  do {
-    sum=0;
-    computer=0;
-    do {
-      puts("");
-      puts("How many numbers do you want in the list");
-      scanf("%d", &n);
-      if (n>50)
-        puts("At this time, regulations allow a maximum of 50 numbers.");
-    } while(n>50);
-    if (n==0)
-      break;
+  sum=0;
+  computer=0;
     
-    array = (int *) malloc(sizeof(int)*(n+1)); /* array of n integers */
-    initialise_list(array,n);
-    printf("The list is: "); 
-    newlist=print_list(array,n);
-    do {
-      puts("");
-      puts("");
-      puts("You take");
-      scanf("%d", &k);
-      if (k<1)
-        break;
-      if (k<=n && array[k-1]==k) {
-        if ((f=check_list_for_factor_of_n(array,k))>0) {
-          sum+=k;
-          array[k-1]=0;
-          facto = (int *) malloc(sizeof(int)*f); /* array of f integers */
-          computer+=initialise_list_of_factors(facto, array, k);
-          printf("I get "); 
-          print_list(facto,f);
-          free(facto);
-          puts("");
-          printf("Your total is %d\n", sum);
-          puts("");
-          printf("My total is %d\n", computer);
-          puts("");
-          printf("New list:"); 
-          newlist=print_list(array,n);
-        }
-        else {
-          printf("There are no factors of %d for me.\n", k);
-          puts("Are you trying to short-change the taxman?");
-        }          
+  array = (int *) malloc(sizeof(int)*(n+1)); /* array of n integers */
+  initialise_list(array,n);
+
+  printf("The list is: "); 
+  newlist=print_list(array,n);
+  do {
+    puts("");
+    puts("");
+    puts("You take");
+    scanf("%d", &k);
+    if (k<1)
+      break;
+    if (k<=n && array[k-1]==k) {
+      if ((f=check_list_for_factor_of_n(array,k))>0) {
+        sum+=k;
+        array[k-1]=0;
+        facto = (int *) malloc(sizeof(int)*f); /* array of f integers */
+        computer+=initialise_list_of_factors(facto, array, k);
+        printf("I get "); 
+        print_list(facto,f);
+        free(facto);
+        puts("");
+        printf("Your total is %d\n", sum);
+        puts("");
+        printf("My total is %d\n", computer);
+        puts("");
+        printf("New list:"); 
+        newlist=print_list(array,n);
       }
       else {
-        printf("%d is not in the list -- try again.\n", k);
-      }
-      if (check_if_any_numbers_stil_have_factors(array,n)==0) {
-        computer+=newlist;
-        printf("I get "); 
-        print_list(array,n);
-        puts("because no factors of any number are left.");
-        printf("My total is %d\n", computer);
-        break;
-      }
-    } while(k>0);
-    free(array);
-    if (sum>computer)
-      printf("You %d   Taxman %d   You win!!!", sum, computer);
-    else
-      printf("Taxmax %d   You %d   The taxman wins.", computer, sum);
-    puts("");
-    puts("");
-    puts("Again (1=Yes, 0=No)");
-    scanf("%d", &r);
-  } while (r>0);
+        printf("There are no factors of %d for me.\n", k);
+        puts("Are you trying to short-change the taxman?");
+      }          
+    }
+    else {
+      printf("%d is not in the list -- try again.\n", k);
+    }
+    if (check_if_any_numbers_stil_have_factors(array,n)==0) {
+      computer+=newlist;
+      printf("I get "); 
+      print_list(array,n);
+      puts("because no factors of any number are left.");
+      printf("My total is %d\n", computer);
+      break;
+    }
+  } while(k>0);
+  free(array);
+  if (sum>computer)
+    printf("You %d   Taxman %d   You win!!!", sum, computer);
+  else
+    printf("Taxmax %d   You %d   The taxman wins.", computer, sum);
 
 }
