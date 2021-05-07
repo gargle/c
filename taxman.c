@@ -13,22 +13,52 @@
 
 
 
+int how_many_to_take() {
+  int characters_read;
+  int take=0;
+  do {
+    puts("");
+    puts("");
+    printf("You take: ");
+    characters_read=scanf("%i", &take);
+    while(getchar()!='\n');
+  } while(characters_read<1);
+  return take;
+}
+
 void initialise_list(int *array, int n) {
   for(int i=1;i<=n;i++) {
     *array++=i;
   }
 }
 
-int print_list(int *array, int n) {
+int sum_list(int *array, int n) {
   int sum=0;
   for(int i=1;i<n;i++) {
-    if (array[i-1]==0)
-      continue;
     sum+=array[i-1];
-    printf("%d, ", array[i-1]);
   }
-  printf("%d\n", array[n-1]);
   return sum;
+}
+
+void print_list(int *array, int n) {
+  int nonzero=-1;
+  for(int i=1;i<=n;i++) {
+    if (array[i-1]!=0) {
+      nonzero=i-1;
+      break;
+    }
+  }
+  if (nonzero>-1) {
+    printf("%d", array[nonzero]);
+    if (nonzero+1<n) {
+      for(int i=nonzero+2;i<=n;i++) {
+        if (array[i-1]==0)
+          continue;
+        printf(", %d", array[i-1]);
+      }
+    }
+  }
+  puts("");
 }
 
 int check_list_for_factor_of_n(int *array, int k) {
@@ -98,8 +128,8 @@ void instructions() {
 }
 
 int main(int argc, char *argv[]) {
-  int r,k,f;
-  int sum,computer;
+  int taken,f;
+  int mytotal,taxmantotal;
   int newlist=0;
   int n=0;
   int *array=NULL;
@@ -131,59 +161,59 @@ int main(int argc, char *argv[]) {
   puts("");
   puts("Hi, I'm the taxman");
 
-  sum=0;
-  computer=0;
+  mytotal=0;
+  taxmantotal=0;
     
   array = (int *) malloc(sizeof(int)*(n+1)); /* array of n integers */
   initialise_list(array,n);
 
   printf("The list is: "); 
-  newlist=print_list(array,n);
-  do {
-    puts("");
-    puts("");
-    puts("You take");
-    scanf("%d", &k);
-    if (k<1)
+  print_list(array,n);
+  for (;;) {
+    taken=how_many_to_take();
+    if (taken<1)
       break;
-    if (k<=n && array[k-1]==k) {
-      if ((f=check_list_for_factor_of_n(array,k))>0) {
-        sum+=k;
-        array[k-1]=0;
+    if (taken<=n && array[taken-1]==taken) {
+      if ((f=check_list_for_factor_of_n(array,taken))>0) {
+        mytotal+=taken;
+        array[taken-1]=0;
         facto = (int *) malloc(sizeof(int)*f); /* array of f integers */
-        computer+=initialise_list_of_factors(facto, array, k);
-        printf("I get "); 
+        taxmantotal+=initialise_list_of_factors(facto, array, taken);
+        printf("I get: "); 
         print_list(facto,f);
         free(facto);
         puts("");
-        printf("Your total is %d\n", sum);
+        printf("Your total is %d\n", mytotal);
+        printf("My total is %d\n", taxmantotal);
         puts("");
-        printf("My total is %d\n", computer);
-        puts("");
-        printf("New list:"); 
-        newlist=print_list(array,n);
+        printf("New list: "); 
+        print_list(array,n);
       }
       else {
-        printf("There are no factors of %d for me.\n", k);
+        puts("");
+        printf("There are no factors of %d for the me.\n", taken);
         puts("Are you trying to short-change the taxman?");
       }          
     }
     else {
-      printf("%d is not in the list -- try again.\n", k);
+      printf("%d is not in the list -- try again.\n", taken);
     }
     if (check_if_any_numbers_stil_have_factors(array,n)==0) {
-      computer+=newlist;
-      printf("I get "); 
-      print_list(array,n);
-      puts("because no factors of any number are left.");
-      printf("My total is %d\n", computer);
+      taxmantotal+=sum_list(array,n);
+      puts("");
+      puts("I get the remains because no factors of any number are left.");
+      puts("");
+      printf("Your total is %d\n", mytotal);
+      printf("My total is %d\n", taxmantotal);
       break;
     }
-  } while(k>0);
+  }
   free(array);
-  if (sum>computer)
-    printf("You %d   Taxman %d   You win!!!", sum, computer);
-  else
-    printf("Taxmax %d   You %d   The taxman wins.", computer, sum);
 
+  /* show who won */
+  puts("");
+  if (mytotal>taxmantotal)
+    printf("Your total is %d.  The taxman's total is %d.   You win!!!", mytotal, taxmantotal);
+  else
+    printf("The taxmax's total is %d.  Your total is %d.  The taxman wins.", taxmantotal, mytotal);
 }
