@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-void main() {
+int main() {
   int getal = 0;                                                  /* a 0xffffcc3c v 0 */
   int *ptr_getal;                                                 /* a 0xffffcc30 v ? */
 
