@@ -1,7 +1,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-/* as a reminder, pointers can be tricky */
+/* as a reminder, pointers can be tricky
+
+   compile with: gcc pointers.c -o pointers -O3 -Wall -std=gnu11
+
+   compile with -g -O0 when debugging with gdb, -g for valgrind
+*/
 
 /* &var points to var   */
 /* ptr   points to *ptr */
