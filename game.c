@@ -26,11 +26,11 @@ int main() {
   location ingang_living      = { "aan de ingang living", NULL, NULL, NULL, NULL };
   location ingang_toilet      = { "aan de ingang toilet", NULL, NULL, NULL, NULL };
   location ingang_badkamer    = { "aan de ingang badkamer", NULL, NULL, NULL, NULL };
-  location badkamer           = { "in de badkamer", NULL };
-  location toilet             = { "in het toilet", NULL };
-  location living             = { "in de living", NULL };
-  location keuken             = { "in de keuken", NULL };
-  location bergruimte         = { "in de bergruimte", NULL };
+  location badkamer           = { "in de badkamer", NULL, NULL, NULL, NULL };
+  location toilet             = { "in het toilet", NULL, NULL, NULL, NULL };
+  location living             = { "in de living", NULL, NULL, NULL, NULL };
+  location keuken             = { "in de keuken", NULL, NULL, NULL, NULL };
+  location bergruimte         = { "in de bergruimte", NULL, NULL, NULL, NULL };
   
   ingang_appartement.west     = &ingang_eerstekamer;
   ingang_eerstekamer.south    = &eerstekamer;
